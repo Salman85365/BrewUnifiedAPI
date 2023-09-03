@@ -1,0 +1,23 @@
+_format_version: "1.1"
+
+services:
+  - name: warehouse
+    url: http://warehouse:8001
+    routes:
+      - name: warehouse-route
+        paths:
+          - /warehouse
+
+  - name: accounting
+    url: http://accounting:8002
+    routes:
+      - name: accounting-route
+        paths:
+          - /accounting
+
+  - name: sales
+    url: http://sales:8003
+    routes:
+      - name: sales-route
+        paths:
+          - /sales

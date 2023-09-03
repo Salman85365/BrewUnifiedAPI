@@ -1,0 +1,133 @@
+version: '3'
+
+services:
+  db_warehouse:
+    image: postgres:14.0-alpine
+    container_name: db_warehouse
+    environment:
+      - POSTGRES_DB=${WAREHOUSE_DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - warehouse-database:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - 5431:5432
+
+  db_accounts:
+    image: postgres:14.0-alpine
+    container_name: db_accounts
+    environment:
+      - POSTGRES_DB=${ACCOUNTS_DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - accounts-database:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - 5433:5432
+
+  db_sales:
+    image: postgres:14.0-alpine
+    container_name: db_sales
+    environment:
+      - POSTGRES_DB=${SALES_DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - sales-database:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - 5434:5432
+  kong:
+    image: kong:latest
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: "/etc/kong/kong.yml"
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+    volumes:
+      - ./kong.yml:/etc/kong/kong.yml
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "8101:8001"
+      - "8444:8444"
+
+  warehouse:
+    build:
+        context: ./services/warehouse
+        dockerfile: Dockerfile
+    environment:
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_NAME=${WAREHOUSE_DB_NAME}
+        - DB_HOST=db_warehouse
+        - DB_PORT=${DB_PORT}
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - ./services/warehouse:/app
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db_warehouse
+
+  accounting:
+    build:
+        context: ./services/accounting
+        dockerfile: Dockerfile
+    environment:
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_NAME=${ACCOUNTS_DB_NAME}
+        - DB_HOST=db_accounts
+        - DB_PORT=${DB_PORT}
+    command: python manage.py runserver 0.0.0.0:8002
+    volumes:
+      - ./services/accounting:/app
+    ports:
+      - "8002:8002"
+    depends_on:
+      - db_accounts
+
+  sales:
+    build:
+        context: ./services/sales
+        dockerfile: Dockerfile
+    environment:
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_NAME=${SALES_DB_NAME}
+        - DB_HOST=db_sales
+        - DB_PORT=${DB_PORT}
+        - REDIS_HOST=${REDIS_HOST}
+        - REDIS_PORT=${REDIS_PORT}
+        - KONG_BASE_URL=${KONG_BASE_URL}
+    command: ["./wait-for-it.sh", "redis:6379", "--", "python", "manage.py", "runserver", "0.0.0.0:8003"]
+    volumes:
+      - ./services/sales:/app
+    ports:
+      - "8003:8003"
+
+  celery:
+    build:
+        context: ./services/sales
+        dockerfile: Dockerfile
+    command: celery -A sales worker --loglevel=info
+    volumes:
+      - .:/code
+    depends_on:
+      - sales
+      - redis
+
+  redis:
+    image: "redis:alpine"
+
+volumes:
+  warehouse-database:
+  accounts-database:
+  sales-database:
+
