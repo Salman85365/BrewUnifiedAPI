@@ -1,8 +1,7 @@
-# serializers.py
 from rest_framework import serializers
-from .models import Item
+from .models import WarehouseItem
 
-class ItemSerializer(serializers.ModelSerializer):
+class WarehouseItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
-        fields = ('id', 'name', 'description', 'quantity')
+        model = WarehouseItem
+        fields = '__all__'
