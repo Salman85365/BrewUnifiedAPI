@@ -86,7 +86,7 @@ KONG_BASE_URL = env("KONG_BASE_URL", default="http://kong:8000")
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
+        "NAME": env("ACCOUNTS_DB_NAME"),
         "USER": env("DB_USER"),
         "HOST": env("DB_HOST"),
         "PORT": env("DB_PORT"),

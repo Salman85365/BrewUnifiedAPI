@@ -31,11 +31,11 @@ class WarehouseItemPrice(APIView):
 class WarehouseItemBuy(APIView):
     def post(self, request, item_id):
         item = WarehouseItem.objects.get(id=item_id)
-        max_quantity = request.data.get('max_quantity')
-        if item.quantity >= max_quantity:
-            item.quantity -= max_quantity
+        ordered_quantity = int(request.data.get('ordered_quantity'))
+        if item.quantity >= ordered_quantity:
+            item.quantity -= ordered_quantity
             item.save()
-            return Response({'message': f'Successfully bought {max_quantity} items'}, status=status.HTTP_200_OK)
+            return Response({'message': f'Successfully bought {ordered_quantity} items'}, status=status.HTTP_200_OK)
         else:
             return Response({'message': 'Insufficient quantity available'}, status=status.HTTP_400_BAD_REQUEST)
 

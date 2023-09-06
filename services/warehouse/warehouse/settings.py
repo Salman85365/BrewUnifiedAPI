@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import environ
 import os
-env = environ.Env()
-environ.Env.read_env()
-print(os.environ)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -85,7 +82,7 @@ KONG_BASE_URL = env("KONG_BASE_URL", default="http://kong:8000")
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
+        "NAME": env("WAREHOUSE_DB_NAME"),
         "USER": env("DB_USER"),
         "HOST": env("DB_HOST"),
         "PORT": env("DB_PORT"),

@@ -83,7 +83,7 @@ KONG_BASE_URL = env("KONG_BASE_URL", default="http://kong:8000")
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
+        "NAME": env("SALES_DB_NAME"),
         "USER": env("DB_USER"),
         "HOST": env("DB_HOST"),
         "PORT": env("DB_PORT"),
@@ -128,7 +128,7 @@ USE_TZ = True
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

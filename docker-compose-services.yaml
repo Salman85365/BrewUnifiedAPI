@@ -64,7 +64,7 @@ services:
     environment:
         - DB_USER=${DB_USER}
         - DB_PASSWORD=${DB_PASSWORD}
-        - DB_NAME=${WAREHOUSE_DB_NAME}
+        - WAREHOUSE_DB_NAME=${WAREHOUSE_DB_NAME}
         - DB_HOST=db_warehouse
         - DB_PORT=${DB_PORT}
     command: python manage.py runserver 0.0.0.0:8001
@@ -82,7 +82,7 @@ services:
     environment:
         - DB_USER=${DB_USER}
         - DB_PASSWORD=${DB_PASSWORD}
-        - DB_NAME=${ACCOUNTS_DB_NAME}
+        - ACCOUNTS_DB_NAME=${ACCOUNTS_DB_NAME}
         - DB_HOST=db_accounts
         - DB_PORT=${DB_PORT}
     command: python manage.py runserver 0.0.0.0:8002
@@ -100,7 +100,7 @@ services:
     environment:
         - DB_USER=${DB_USER}
         - DB_PASSWORD=${DB_PASSWORD}
-        - DB_NAME=${SALES_DB_NAME}
+        - SALES_DB_NAME=${SALES_DB_NAME}
         - DB_HOST=db_sales
         - DB_PORT=${DB_PORT}
         - REDIS_HOST=${REDIS_HOST}
@@ -109,6 +109,8 @@ services:
     command: ["./wait-for-it.sh", "redis:6379", "--", "python", "manage.py", "runserver", "0.0.0.0:8003"]
     volumes:
       - ./services/sales:/app
+    stdin_open: true
+    tty: true
     ports:
       - "8003:8003"
 
@@ -120,7 +122,7 @@ services:
     environment:
         - DB_USER=${DB_USER}
         - DB_PASSWORD=${DB_PASSWORD}
-        - DB_NAME=${SALES_DB_NAME}
+        - SALES_DB_NAME=${SALES_DB_NAME}
         - DB_HOST=db_sales
         - DB_PORT=${DB_PORT}
         - REDIS_HOST=${REDIS_HOST}

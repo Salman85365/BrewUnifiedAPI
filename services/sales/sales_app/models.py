@@ -8,3 +8,8 @@ class Sale(models.Model):
 
     def __str__(self):
         return f"{self.item} - {self.quantity_sold} units"
+
+class Order(models.Model):
+    item_id = models.PositiveIntegerField()
+    item_name = models.CharField(max_length=200)
+    quantity_ordered = models.PositiveIntegerField(default=1)
