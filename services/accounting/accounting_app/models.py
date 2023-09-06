@@ -1,9 +1,22 @@
-# models.py
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-class Price(models.Model):
-    item = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=8, decimal_places=2)  # Assuming a maximum price of 999999.99
+class CustomUser(AbstractUser):
+    pass
 
-    def __str__(self):
-        return f"{self.item} - ${self.price}"
+class Transaction(models.Model):
+    DEBIT = 'Debit'
+    CREDIT = 'Credit'
+    TRANSACTION_TYPES = [
+        (DEBIT, 'Debit'),
+        (CREDIT, 'Credit'),
+    ]
+    description = models.CharField(max_length=255)
+    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField(auto_now_add=True)
+
+class Account(models.Model):
+    name = models.CharField(max_length=255)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    transactions = models.ManyToManyField(Transaction, related_name='accounts')
