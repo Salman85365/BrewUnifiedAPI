@@ -117,6 +117,14 @@ services:
         context: ./services/sales
         dockerfile: Dockerfile
     command: celery -A sales worker --loglevel=info
+    environment:
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_NAME=${SALES_DB_NAME}
+        - DB_HOST=db_sales
+        - DB_PORT=${DB_PORT}
+        - REDIS_HOST=${REDIS_HOST}
+        - REDIS_PORT=${REDIS_PORT}
     volumes:
       - .:/code
     depends_on:

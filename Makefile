@@ -14,15 +14,11 @@ help: ## display this help message
 logs_%: ## Trail logs of the mentioned service
 	docker logs -f --tail 100 $*
 
-serve: ## run all docker Backeend services
+serve: ## run all docker services
 	docker-compose -f docker-compose-services.yaml up -d --build
 
 
-serve_monitering: ## Run all docker monitering services detached
-	docker-compose -f docker-compose-mix.yaml up -d --build
-
-
-restart_%: ## Restart specific service (make restart_auth)
+restart_%: ## Restart specific service (make restart_warehouse)
 	docker-compose -f docker-compose-services.yaml stop $*
 	docker-compose -f docker-compose-services.yaml  up -d --build $*
 
@@ -38,26 +34,21 @@ down: ## Remove all service containers
 shell_%:
 	docker-compose -f docker-compose-services.yaml exec $* python manage.py shell
 
-logs_%: ## Trail logs of the service (make logs_auth)
+logs_%: ## Trail logs of the service (make logs_warehouse)
 	docker logs -f --tail 500 $*
 
 
-command_%: ## Run custom docker django-admin command (make command_auth args="shell")
+command_%: ## Run custom docker django-admin command (make command_warehouse args="shell")
 	docker-compose -f docker-compose-services.yaml  exec $* python manage.py ${args}
 
-migrate_%: ## Migrate docker specific backend docker services (make migrate_auth)
+migrate_%: ## Migrate docker specific backend docker services (make migrate_warehouse)
 	docker-compose -f docker-compose-services.yaml exec $* python manage.py migrate --noinput
 
 migrate_all: ## Migrate all docker containers
-	make migrate_auth
-	make migrate_admin
-	make migrate_content
-	make migrate_teacher
-	make migrate_school
-	make migrate_class
-	make migrate_teachertraining
-	make migrate_exam
-	make migrate_studentlearning
+	make migrate_warehouse
+	make migrate_sales
+	make migrate_accounting
+
 
 
 send_images_to_ec2_tag_%: ## Create and send images to ec2
@@ -74,8 +65,8 @@ send_images_to_ec2_tag_%: ## Create and send images to ec2
 	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-fe-frontend-ap-south-1:$*
 	docker tag admin 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-admin-prod-ap-south-1:$*
 	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-admin-prod-ap-south-1:$*
-	docker tag auth 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-auth-prod-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-auth-prod-ap-south-1:$*
+	docker tag warehouse 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-warehouse-prod-ap-south-1:$*
+	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-warehouse-prod-ap-south-1:$*
 	docker tag teachertraining 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-teacher_training-prod-ap-south-1:$*
 	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-teacher_training-prod-ap-south-1:$*
 	docker tag exam 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-exam-prod-ap-south-1:$*
