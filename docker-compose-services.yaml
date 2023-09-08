@@ -67,13 +67,19 @@ services:
         - WAREHOUSE_DB_NAME=${WAREHOUSE_DB_NAME}
         - DB_HOST=db_warehouse
         - DB_PORT=${DB_PORT}
-    command: python manage.py runserver 0.0.0.0:8001
+        - KONG_BASE_URL=${KONG_BASE_URL}
+        - REDIS_HOST=${REDIS_HOST}
+        - REDIS_PORT=${REDIS_PORT}
+    command: ["./wait-for-it.sh", "redis:6379", "--", "python", "manage.py", "runserver", "0.0.0.0:8001"]
     volumes:
       - ./services/warehouse:/app
+    stdin_open: true
+    tty: true
     ports:
       - "8001:8001"
     depends_on:
       - db_warehouse
+      - redis
 
   accounting:
     build:
@@ -85,9 +91,13 @@ services:
         - ACCOUNTS_DB_NAME=${ACCOUNTS_DB_NAME}
         - DB_HOST=db_accounts
         - DB_PORT=${DB_PORT}
+        - KONG_BASE_URL=${KONG_BASE_URL}
+        - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     command: python manage.py runserver 0.0.0.0:8002
     volumes:
       - ./services/accounting:/app
+    stdin_open: true
+    tty: true
     ports:
       - "8002:8002"
     depends_on:
@@ -106,6 +116,7 @@ services:
         - REDIS_HOST=${REDIS_HOST}
         - REDIS_PORT=${REDIS_PORT}
         - KONG_BASE_URL=${KONG_BASE_URL}
+        - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     command: ["./wait-for-it.sh", "redis:6379", "--", "python", "manage.py", "runserver", "0.0.0.0:8003"]
     volumes:
       - ./services/sales:/app
