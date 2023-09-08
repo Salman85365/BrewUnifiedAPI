@@ -13,7 +13,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [ 3.7, 3.8, 3.9 ]
+        python-version: [ 3.8, 3.9 ]
 
     steps:
       - uses: actions/checkout@v3
@@ -29,6 +29,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run Sales Tests
+        working-directory: ./services/sales
+        env:
+          DJANGO_SETTINGS_MODULE: sales.test_settings
         run: |
           python manage.py test
       
@@ -41,6 +44,8 @@ jobs:
           pip install -r requirements.txt
       - name: Run Warehouse Tests
         working-directory: ./services/warehouse
+        env:
+          DJANGO_SETTINGS_MODULE: warehouse.test_settings
         run: |
           python manage.py test
 
@@ -52,5 +57,7 @@ jobs:
           pip install -r requirements.txt
       - name: Run Accounting Tests
         working-directory: ./services/accounting
+        env:
+          DJANGO_SETTINGS_MODULE: accounting.test_settings
         run: |
           python manage.py test
