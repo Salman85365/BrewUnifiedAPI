@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  KONG_BASE_URL: "http://kong:8000"
+  DB_USER: "test_db"
+  DB_PASSWORD: "test"
+  DB_PORT: "5432"
+  WAREHOUSE_DB_NAME: "warehouse"
+  ACCOUNTS_DB_NAME: "accounts"
+  SALES_DB_NAME: "sales"
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  SALES_DB_HOST: "db-sales"
+

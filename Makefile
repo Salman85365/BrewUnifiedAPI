@@ -89,3 +89,4 @@ upgrade_%: ## Compile requirements.txt for a given backend service.
 setup:
 	echo "Setting permissions..."
 	@chmod +x ./services/sales/wait-for-it.sh
+	@chmod +x ./services/warehouse/wait-for-it.sh

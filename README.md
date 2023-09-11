@@ -17,3 +17,8 @@ For details of Makefile commands:
 # For Kubernetes
 kubectl apply -f k8s-deployment.yaml
 
+eval $(minikube docker-env)
+
+for log in kube
+ kubectl logs accounting-7f6cd5ff5f-nrn4d -c accounting
+kubectl describe pod accounting

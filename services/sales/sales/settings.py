@@ -98,7 +98,7 @@ def get_database_config():
         "ENGINE": "django.db.backends.postgresql",
         "NAME": env("SALES_DB_NAME"),
         "USER": env("DB_USER"),
-        "HOST": env("DB_HOST"),
+        "HOST": env("SALES_DB_HOST", default="db-sales"),
         "PORT": env("DB_PORT"),
         "PASSWORD": env("DB_PASSWORD"),
     }

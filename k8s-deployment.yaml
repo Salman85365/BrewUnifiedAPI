@@ -41,9 +41,6 @@ spec:
         - containerPort: 5432
 
 ---
-# Remember to repeat the above structure for db_accounts and db_sales
-
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -73,14 +70,277 @@ spec:
     spec:
       containers:
       - name: warehouse
-        image: brewunifiedapi-warehouse:latest
-        env:
-        # Note: The environment variables should be stored in Secrets or ConfigMaps for better security.
-        - name: DB_USER
-          value: test
-        - name: DB_PASSWORD
-          value: test
+        image: task_project-warehouse:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: app-config
         # ... Add other environment variables as needed ...
         command: ["./wait-for-it.sh", "redis:6379", "--", "python", "manage.py", "runserver", "0.0.0.0:8001"]
         ports:
         - containerPort: 8001
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-accounts
+spec:
+  selector:
+    app: db-accounts
+  ports:
+  - protocol: TCP
+    port: 5433
+    targetPort: 5432
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-accounts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-accounts
+  template:
+    metadata:
+      labels:
+        app: db-accounts
+    spec:
+      containers:
+      - name: db-accounts
+        image: postgres:14.0-alpine
+        env:
+        # Note: The environment variables should be stored in Secrets or ConfigMaps for better security.
+        - name: POSTGRES_DB
+          value: db_accounts
+        - name: POSTGRES_USER
+          value: test
+        - name: POSTGRES_PASSWORD
+          value: test
+        ports:
+        - containerPort: 5432
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounting
+spec:
+  selector:
+    app: accounting
+  ports:
+  - protocol: TCP
+    port: 8002
+    targetPort: 8002
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounting
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accounting
+  template:
+    metadata:
+      labels:
+        app: accounting
+    spec:
+      containers:
+      - name: accounting
+        image: task_project-accounting:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: app-config
+#        env:
+#        # Note: The environment variables should be stored in Secrets or ConfigMaps for better security.
+#        - name: ACCOUNTS_DB_NAME
+#          value: db_accounts
+#        - name: DB_USER
+#          value: test
+#        - name: DB_PASSWORD
+#          value: test
+#        - name: DB_PORT
+#          value: "5432"
+
+        ports:
+        - containerPort: 8002
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-sales
+spec:
+  selector:
+    app: db-sales
+  ports:
+  - protocol: TCP
+    port: 5434
+    targetPort: 5432
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-sales
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-sales
+  template:
+    metadata:
+      labels:
+        app: db-sales
+    spec:
+      containers:
+      - name: db-sales
+        image: postgres:14.0-alpine
+        env:
+        # Note: The environment variables should be stored in Secrets or ConfigMaps for better security.
+        - name: POSTGRES_DB
+          value: db_sales
+        - name: POSTGRES_USER
+          value: test
+        - name: POSTGRES_PASSWORD
+          value: test
+        ports:
+        - containerPort: 5432
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sales
+spec:
+  selector:
+    app: sales
+  ports:
+  - protocol: TCP
+    port: 8003
+    targetPort: 8003
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sales
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sales
+  template:
+    metadata:
+      labels:
+        app: sales
+    spec:
+      containers:
+      - name: sales
+        image: task_project-sales:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: app-config
+
+        ports:
+        - containerPort: 8003
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kong
+spec:
+  selector:
+    app: kong
+  ports:
+  - name: proxy
+    protocol: TCP
+    port: 8000
+    targetPort: 8000
+  - name: proxy-ssl
+    protocol: TCP
+    port: 8443
+    targetPort: 8443
+  - name: admin
+    protocol: TCP
+    port: 8101
+    targetPort: 8001
+  - name: admin-ssl
+    protocol: TCP
+    port: 8444
+    targetPort: 8444
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong
+  template:
+    metadata:
+      labels:
+        app: kong
+    spec:
+      containers:
+      - name: kong
+        image: kong:latest
+        envFrom:
+        - configMapRef:
+            name: app-config
+        ports:
+        - containerPort: 8000
+        - containerPort: 8443
+        - containerPort: 8001
+        - containerPort: 8444
+        volumeMounts:
+        - name: kong-config
+          mountPath: /path/where/kong/expects/config.yml
+          subPath: kong.yml
+      volumes:
+      - name: kong-config
+        configMap:
+          name: kong-config
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-config
+data:
+  kong.yml: |
+    _format_version: "1.1"
+
+    services:
+      - name: warehouse
+        url: http://warehouse:8001
+        routes:
+          - name: warehouse-route
+            paths:
+              - /warehouse
+
+      - name: accounting
+        url: http://accounting:8002
+        routes:
+          - name: accounting-route
+            paths:
+              - /accounting
+            
+      - name: sales
+        url: http://sales:8003
+        routes:
+          - name: sales-route
+            paths:
+              - /sales
