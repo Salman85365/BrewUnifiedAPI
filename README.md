@@ -14,3 +14,6 @@ First you have to run a command, from your main directory (Task_project), you ne
 For details of Makefile commands:
 # make help
 
+# For Kubernetes
+kubectl apply -f k8s-deployment.yaml
+
