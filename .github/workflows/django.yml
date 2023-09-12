@@ -22,12 +22,27 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      # Test Warehouse Service
+      - name: Install Warehouse Dependencies
+        working-directory: ./services/warehouse
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python manage.py migrate
+      - name: Run Warehouse Tests
+        working-directory: ./services/warehouse
+        env:
+          DJANGO_SETTINGS_MODULE: warehouse.settings
+        run: |
+          python manage.py test
+
       # Test Sales Service
       - name: Install Sales Dependencies
         working-directory: ./services/sales
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          python manage.py migrate
       - name: Run Sales Tests
         working-directory: ./services/sales
         env:
@@ -36,25 +51,13 @@ jobs:
           python manage.py test
       
 
-      # Test Warehouse Service
-      - name: Install Warehouse Dependencies
-        working-directory: ./services/warehouse
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Run Warehouse Tests
-        working-directory: ./services/warehouse
-        env:
-          DJANGO_SETTINGS_MODULE: warehouse.settings
-        run: |
-          python manage.py test
-
       # Test Accounting Service
       - name: Install Accounting Dependencies
         working-directory: ./services/accounting
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          python manage.py migrate
       - name: Run Accounting Tests
         working-directory: ./services/accounting
         env:
