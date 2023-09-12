@@ -56,7 +56,7 @@ class JWTAuthenticationMiddleware:
             # Get the token from request
             token = request.META.get("HTTP_AUTHORIZATION")
             # Exclude this middleware for admin site
-            if request.path.startswith("/management"):
+            if request.path.startswith("/admin"):
                 return self.get_response(request)
 
             elif not token:
