@@ -81,30 +81,28 @@ KONG_BASE_URL = env("KONG_BASE_URL", default="http://kong:8000")
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("SALES_DB_NAME"),
-        "USER": env("DB_USER"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
-        "PASSWORD": env("DB_PASSWORD"),
-    }
-}
 
-def get_database_config():
-    return {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("SALES_DB_NAME"),
-        "USER": env("DB_USER"),
-        "HOST": env("SALES_DB_HOST", default="db-sales"),
-        "PORT": env("DB_PORT"),
-        "PASSWORD": env("DB_PASSWORD"),
+if env("POSTGRES", default=None):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("SALES_DB_NAME"),
+            "USER": env("DB_USER"),
+            "HOST": env("DB_HOST", default="db-sales"),
+            "PORT": env("DB_PORT"),
+            "PASSWORD": env("DB_PASSWORD"),
+        }
     }
-}
 
-DATABASES = get_database_config()
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

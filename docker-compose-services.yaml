@@ -70,6 +70,7 @@ services:
         - KONG_BASE_URL=${KONG_BASE_URL}
         - REDIS_HOST=${REDIS_HOST}
         - REDIS_PORT=${REDIS_PORT}
+        - POSTGRES=${POSTGRES}
     command: ["./wait-for-it.sh", "redis:6379", "--", "python", "manage.py", "runserver", "0.0.0.0:8001"]
     volumes:
       - ./services/warehouse:/app
@@ -92,6 +93,7 @@ services:
         - DB_HOST=db_accounts
         - DB_PORT=${DB_PORT}
         - KONG_BASE_URL=${KONG_BASE_URL}
+        - POSTGRES=${POSTGRES}
     command: python manage.py runserver 0.0.0.0:8002
     volumes:
       - ./services/accounting:/app
@@ -110,11 +112,12 @@ services:
         - DB_USER=${DB_USER}
         - DB_PASSWORD=${DB_PASSWORD}
         - SALES_DB_NAME=${SALES_DB_NAME}
-        - SALES_DB_HOST=${SALES_DB_HOST}
+        - DB_HOST=db_sales
         - DB_PORT=${DB_PORT}
         - REDIS_HOST=${REDIS_HOST}
         - REDIS_PORT=${REDIS_PORT}
         - KONG_BASE_URL=${KONG_BASE_URL}
+        - POSTGRES=${POSTGRES}
     command: ["./wait-for-it.sh", "redis:6379", "--", "python", "manage.py", "runserver", "0.0.0.0:8003"]
     volumes:
       - ./services/sales:/app
