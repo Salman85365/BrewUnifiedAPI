@@ -31,7 +31,7 @@ jobs:
       - name: Run Sales Tests
         working-directory: ./services/sales
         env:
-          DJANGO_SETTINGS_MODULE: sales.test_settings
+          DJANGO_SETTINGS_MODULE: sales.settings
         run: |
           python manage.py test
       
@@ -45,7 +45,7 @@ jobs:
       - name: Run Warehouse Tests
         working-directory: ./services/warehouse
         env:
-          DJANGO_SETTINGS_MODULE: warehouse.test_settings
+          DJANGO_SETTINGS_MODULE: warehouse.settings
         run: |
           python manage.py test
 
@@ -58,6 +58,6 @@ jobs:
       - name: Run Accounting Tests
         working-directory: ./services/accounting
         env:
-          DJANGO_SETTINGS_MODULE: accounting.test_settings
+          DJANGO_SETTINGS_MODULE: accounting.settings
         run: |
           python manage.py test
