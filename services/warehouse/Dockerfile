@@ -5,6 +5,8 @@ FROM python:3.8-slim
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
+COPY wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
 # Create and set the working directory
 WORKDIR /app
 
