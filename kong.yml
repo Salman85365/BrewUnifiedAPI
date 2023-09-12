@@ -7,6 +7,12 @@ services:
       - name: warehouse-route
         paths:
           - /warehouse
+  - name: warehouse-swagger
+    url: http://warehouse:8001/swagger/
+    routes:
+      - name: warehouse-swagger-route
+        paths:
+          - /warehouse-swagger
 
   - name: accounting
     url: http://accounting:8002
@@ -15,9 +21,23 @@ services:
         paths:
           - /accounting
 
+  - name: acc-swagger
+    url: http://accounting:8002/swagger/
+    routes:
+      - name: accounting-swagger-route
+        paths:
+          - /accounting-swagger
+
   - name: sales
     url: http://sales:8003
     routes:
       - name: sales-route
         paths:
           - /sales
+
+  - name: sales-swagger
+    url: http://sales:8003/swagger/
+    routes:
+      - name: sales-swagger-route
+        paths:
+          - /sales-swagger

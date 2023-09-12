@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounting_app.apps.AccountingAppConfig',
     "rest_framework",
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

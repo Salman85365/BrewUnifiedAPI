@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'warehouse_app.apps.WarehouseAppConfig',
     "rest_framework",
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
