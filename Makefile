@@ -11,9 +11,6 @@ help: ## display this help message
 	@grep '^[a-zA-Z]' $(MAKEFILE_LIST) | sort | awk -F ':.*?## ' 'NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
 
 
-logs_%: ## Trail logs of the mentioned service
-	docker logs -f --tail 100 $*
-
 serve: ## run all docker services
 	docker-compose -f docker-compose-services.yaml up -d --build
 
@@ -51,29 +48,6 @@ migrate_all: ## Migrate all docker containers
 
 
 
-send_images_to_ec2_tag_%: ## Create and send images to ec2
-	aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 449874233708.dkr.ecr.ap-south-1.amazonaws.com
-	docker tag class 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-class-prod-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-class-prod-ap-south-1:$*
-	docker tag content 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-content-prod-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-content-prod-ap-south-1:$*
-	docker tag school 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-school-prod-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-school-prod-ap-south-1:$*
-	docker tag teacher 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-teacher-prod-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-teacher-prod-ap-south-1:$*
-	docker tag frontend 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-fe-frontend-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-fe-frontend-ap-south-1:$*
-	docker tag admin 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-admin-prod-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-admin-prod-ap-south-1:$*
-	docker tag warehouse 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-warehouse-prod-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-man-warehouse-prod-ap-south-1:$*
-	docker tag teachertraining 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-teacher_training-prod-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-teacher_training-prod-ap-south-1:$*
-	docker tag exam 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-exam-prod-ap-south-1:$*
-	docker push 449874233708.dkr.ecr.ap-south-1.amazonaws.com/ecr-be-exam-prod-ap-south-1:$*
-
-
-
 checkout_%: ## Recreate volumes and restart services
 	git checkout $*
 	docker volume rm $(docker volume ls -q)
@@ -82,9 +56,6 @@ checkout_%: ## Recreate volumes and restart services
 	make serve
 	make migrate_all
 	
-
-upgrade_%: ## Compile requirements.txt for a given backend service.
-	docker run --rm -v `pwd`:/web pipupgrade:latest python -m piptools compile --upgrade --verbose --rebuild -o services/$*/requirements.txt services/$*/requirements.in
 
 setup:
 	echo "Setting permissions..."
