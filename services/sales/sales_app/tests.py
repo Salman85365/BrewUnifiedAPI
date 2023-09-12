@@ -1,9 +1,10 @@
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, MagicMock
 from rest_framework.test import APIClient
 from django.test import RequestFactory
 from sales.middlewares import JWTAuthenticationMiddleware
 from django.conf import settings
+from .models import Order
 
 
 class JWTAuthenticationMiddlewareTest(unittest.TestCase):
@@ -53,8 +54,9 @@ class JWTAuthenticationMiddlewareTest(unittest.TestCase):
 
     @patch('sales.middlewares.JWTAuthenticationMiddleware.is_valid_token',
            return_value=(True, {"data": "mocked_data"}, 200))
-    def test_create_order(self, mock_valid_token):
-        response = self.client.post('/orders/', {
+    @patch('sales_app.tasks.adjust_inventory.delay', return_value=MagicMock(name="Mocked method"))  # Add this line
+    def test_create_order(self, mock_valid_token, mocked_task):  # Add mocked_task
+        response = self.client.post('/api/orders/', {
             'item_id': '1',
             'item_name': 'ItemName',
             'quantity_ordered': 2
@@ -66,7 +68,7 @@ class JWTAuthenticationMiddlewareTest(unittest.TestCase):
            return_value=(True, {"data": "mocked_data"}, 200))
     @patch('sales_app.views.cache')
     def test_create_sale(self, mock_cache, mock_valid_token):
-        url = '/sales/'
+        url = '/api/sales/'
         data = {'item': 'test_item', 'quantity_sold': 5}
         response = self.client.post(url, data, format='json', HTTP_AUTHORIZATION='Bearer test_token')
         self.assertEqual(response.status_code, 201)
