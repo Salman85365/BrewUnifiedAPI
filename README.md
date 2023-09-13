@@ -21,9 +21,9 @@ Unified API for a microbrewery to manage Warehouse, Accounting, and Sales servic
 From your main project directory (`Task_project`):
 
 ```shell
-make setup
-make serve
-make migrate_all
+make setup  # This will allow permissions to wait-for-it.sh
+make serve # This will run docker compose file, build and run containers 
+make migrate_all # This will run migrations for all services
 ```
 
 ### Superuser Creation
