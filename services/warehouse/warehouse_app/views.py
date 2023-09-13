@@ -18,7 +18,6 @@ class WarehouseItemList(APIView):
         if not request.user_data['role'] == 'Admin':
             return Response({'detail': 'Only administrators can add items.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = WarehouseItemSerializer(data=request.data)
-        breakpoint()
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
