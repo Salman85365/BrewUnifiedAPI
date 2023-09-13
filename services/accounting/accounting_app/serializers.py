@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import UntypedToken
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'is_active']
+        fields = ['id', 'username', 'email', 'is_active', 'role']
 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
