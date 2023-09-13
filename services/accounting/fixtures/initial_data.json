@@ -1,0 +1,100 @@
+[
+    {
+        "model": "accounting_app.account",
+        "pk": 1,
+        "fields": {
+            "name": "Savings Account",
+            "balance": "1000.00"
+        }
+    },
+    {
+        "model": "accounting_app.account",
+        "pk": 2,
+        "fields": {
+            "name": "Checking Account",
+            "balance": "500.00"
+        }
+    },
+    {
+        "model": "accounting_app.account",
+        "pk": 3,
+        "fields": {
+            "name": "Business Account",
+            "balance": "2000.00"
+        }
+    },
+    {
+        "model": "accounting_app.account",
+        "pk": 4,
+        "fields": {
+            "name": "Emergency Fund",
+            "balance": "800.00"
+        }
+    },
+    {
+        "model": "accounting_app.transaction",
+        "pk": 1,
+        "fields": {
+            "description": "Purchase at Store",
+            "transaction_type": "Debit",
+            "account": 2,
+            "amount": "50.00",
+            "date": "2023-09-10"
+        }
+    },
+    {
+        "model": "accounting_app.transaction",
+        "pk": 2,
+        "fields": {
+            "description": "Salary Deposit",
+            "transaction_type": "Credit",
+            "account": 1,
+            "amount": "1500.00",
+            "date": "2023-09-05"
+        }
+    },
+    {
+        "model": "accounting_app.transaction",
+        "pk": 3,
+        "fields": {
+            "description": "Lunch at Restaurant",
+            "transaction_type": "Debit",
+            "account": 2,
+            "amount": "20.00",
+            "date": "2023-09-07"
+        }
+    },
+    {
+        "model": "accounting_app.transaction",
+        "pk": 4,
+        "fields": {
+            "description": "Freelance Income",
+            "transaction_type": "Credit",
+            "account": 3,
+            "amount": "400.00",
+            "date": "2023-09-06"
+        }
+    },
+    {
+        "model": "accounting_app.transaction",
+        "pk": 5,
+        "fields": {
+            "description": "Online Purchase",
+            "transaction_type": "Debit",
+            "account": 1,
+            "amount": "100.00",
+            "date": "2023-09-08"
+        }
+    },
+    {
+        "model": "accounting_app.transaction",
+        "pk": 6,
+        "fields": {
+            "description": "Emergency Hospital Fee",
+            "transaction_type": "Debit",
+            "account": 4,
+            "amount": "100.00",
+            "date": "2023-09-03"
+        }
+    }
+]

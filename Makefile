@@ -23,7 +23,8 @@ restart_%: ## Restart specific service (make restart_warehouse)
 stop: ## Stop all docker Backend Services
 	docker-compose -f docker-compose-services.yaml stop
 
-
+loaddata_%: ## Load fixtures for specific service (make loaddata_warehouse)
+	docker-compose -f docker-compose-services.yaml exec $* python manage.py loaddata fixtures/initial_data.json
 
 down: ## Remove all service containers
 	docker-compose -f docker-compose-services.yaml down
@@ -61,3 +62,10 @@ setup:
 	echo "Setting permissions..."
 	@chmod +x ./services/sales/wait-for-it.sh
 	@chmod +x ./services/warehouse/wait-for-it.sh
+
+test_%: ## Run tests for specific service (make test_warehouse)
+	docker-compose -f docker-compose-services.yaml exec $* python manage.py test
+
+
+user_%: ## Create superuser for specific service (make createsuperuser_warehouse)
+	docker-compose -f docker-compose-services.yaml exec $* python manage.py createsuperuser

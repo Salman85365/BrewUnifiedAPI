@@ -1,0 +1,74 @@
+[
+    {
+        "model": "sales_app.sale",
+        "pk": 1,
+        "fields": {
+            "item": "Product A",
+            "quantity_sold": 10,
+            "sale_date": "2023-09-13T12:00:00Z"
+        }
+    },
+    {
+        "model": "sales_app.sale",
+        "pk": 2,
+        "fields": {
+            "item": "Product B",
+            "quantity_sold": 5,
+            "sale_date": "2023-09-13T13:00:00Z"
+        }
+    },
+    {
+        "model": "sales_app.sale",
+        "pk": 3,
+        "fields": {
+            "item": "Product C",
+            "quantity_sold": 8,
+            "sale_date": "2023-09-13T14:00:00Z"
+        }
+    },
+    {
+        "model": "sales_app.sale",
+        "pk": 4,
+        "fields": {
+            "item": "Product D",
+            "quantity_sold": 15,
+            "sale_date": "2023-09-13T15:00:00Z"
+        }
+    },
+    {
+        "model": "sales_app.order",
+        "pk": 1,
+        "fields": {
+            "item_id": 1,
+            "item_name": "Product A",
+            "quantity_ordered": 3
+        }
+    },
+    {
+        "model": "sales_app.order",
+        "pk": 2,
+        "fields": {
+            "item_id": 2,
+            "item_name": "Product B",
+            "quantity_ordered": 2
+        }
+    },
+    {
+        "model": "sales_app.order",
+        "pk": 3,
+        "fields": {
+            "item_id": 3,
+            "item_name": "Product C",
+            "quantity_ordered": 1
+        }
+    },
+    {
+        "model": "sales_app.order",
+        "pk": 4,
+        "fields": {
+            "item_id": 4,
+            "item_name": "Product D",
+            "quantity_ordered": 4
+        }
+    }
+]

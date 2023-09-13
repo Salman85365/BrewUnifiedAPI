@@ -1,0 +1,242 @@
+[
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 1,
+        "fields": {
+            "name": "Item 1",
+            "description": "Description for Item 1",
+            "quantity": 10,
+            "price": 19.99,
+            "added_at": "2023-09-13T12:00:00Z",
+            "last_modified": "2023-09-13T12:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 2,
+        "fields": {
+            "name": "Item 2",
+            "description": "Description for Item 2",
+            "quantity": 20,
+            "price": 29.99,
+            "added_at": "2023-09-13T13:00:00Z",
+            "last_modified": "2023-09-13T13:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 3,
+        "fields": {
+            "name": "Item 3",
+            "description": "Description for Item 3",
+            "quantity": 15,
+            "price": 24.99,
+            "added_at": "2023-09-13T14:00:00Z",
+            "last_modified": "2023-09-13T14:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 4,
+        "fields": {
+            "name": "Item 4",
+            "description": "Description for Item 4",
+            "quantity": 8,
+            "price": 34.99,
+            "added_at": "2023-09-13T15:00:00Z",
+            "last_modified": "2023-09-13T15:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 5,
+        "fields": {
+            "name": "Item 5",
+            "description": "Description for Item 5",
+            "quantity": 25,
+            "price": 14.99,
+            "added_at": "2023-09-13T16:00:00Z",
+            "last_modified": "2023-09-13T16:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 6,
+        "fields": {
+            "name": "Item 6",
+            "description": "Description for Item 6",
+            "quantity": 12,
+            "price": 22.99,
+            "added_at": "2023-09-13T17:00:00Z",
+            "last_modified": "2023-09-13T17:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 7,
+        "fields": {
+            "name": "Item 7",
+            "description": "Description for Item 7",
+            "quantity": 18,
+            "price": 27.99,
+            "added_at": "2023-09-13T18:00:00Z",
+            "last_modified": "2023-09-13T18:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 8,
+        "fields": {
+            "name": "Item 8",
+            "description": "Description for Item 8",
+            "quantity": 9,
+            "price": 39.99,
+            "added_at": "2023-09-13T19:00:00Z",
+            "last_modified": "2023-09-13T19:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 9,
+        "fields": {
+            "name": "Item 9",
+            "description": "Description for Item 9",
+            "quantity": 14,
+            "price": 17.99,
+            "added_at": "2023-09-13T20:00:00Z",
+            "last_modified": "2023-09-13T20:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 10,
+        "fields": {
+            "name": "Item 10",
+            "description": "Description for Item 10",
+            "quantity": 30,
+            "price": 49.99,
+            "added_at": "2023-09-13T21:00:00Z",
+            "last_modified": "2023-09-13T21:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 11,
+        "fields": {
+            "name": "Item 11",
+            "description": "Description for Item 11",
+            "quantity": 7,
+            "price": 21.99,
+            "added_at": "2023-09-13T22:00:00Z",
+            "last_modified": "2023-09-13T22:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 12,
+        "fields": {
+            "name": "Item 12",
+            "description": "Description for Item 12",
+            "quantity": 11,
+            "price": 18.99,
+            "added_at": "2023-09-13T23:00:00Z",
+            "last_modified": "2023-09-13T23:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 13,
+        "fields": {
+            "name": "Item 13",
+            "description": "Description for Item 13",
+            "quantity": 22,
+            "price": 31.99,
+            "added_at": "2023-09-14T00:00:00Z",
+            "last_modified": "2023-09-14T00:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 14,
+        "fields": {
+            "name": "Item 14",
+            "description": "Description for Item 14",
+            "quantity": 6,
+            "price": 12.99,
+            "added_at": "2023-09-14T01:00:00Z",
+            "last_modified": "2023-09-14T01:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 15,
+        "fields": {
+            "name": "Item 15",
+            "description": "Description for Item 15",
+            "quantity": 17,
+            "price": 26.99,
+            "added_at": "2023-09-14T02:00:00Z",
+            "last_modified": "2023-09-14T02:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 16,
+        "fields": {
+            "name": "Item 16",
+            "description": "Description for Item 16",
+            "quantity": 13,
+            "price": 37.99,
+            "added_at": "2023-09-14T03:00:00Z",
+            "last_modified": "2023-09-14T03:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 17,
+        "fields": {
+            "name": "Item 17",
+            "description": "Description for Item 17",
+            "quantity": 19,
+            "price": 28.99,
+            "added_at": "2023-09-14T04:00:00Z",
+            "last_modified": "2023-09-14T04:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 18,
+        "fields": {
+            "name": "Item 18",
+            "description": "Description for Item 18",
+            "quantity": 5,
+            "price": 23.99,
+            "added_at": "2023-09-14T05:00:00Z",
+            "last_modified": "2023-09-14T05:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 19,
+        "fields": {
+            "name": "Item 19",
+            "description": "Description for Item 19",
+            "quantity": 16,
+            "price": 15.99,
+            "added_at": "2023-09-14T06:00:00Z",
+            "last_modified": "2023-09-14T06:00:00Z"
+        }
+    },
+    {
+        "model": "warehouse_app.warehouseitem",
+        "pk": 20,
+        "fields": {
+            "name": "Item 20",
+            "description": "Description for Item 20",
+            "quantity": 23,
+            "price": 33.99,
+            "added_at": "2023-09-14T07:00:00Z",
+            "last_modified": "2023-09-14T07:00:00Z"
+        }
+    }
+]
