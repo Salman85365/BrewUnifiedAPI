@@ -24,7 +24,6 @@ class TransactionViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
