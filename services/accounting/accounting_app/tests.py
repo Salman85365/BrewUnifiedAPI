@@ -3,10 +3,22 @@ from rest_framework import status
 from .models import CustomUser, Transaction, Account
 
 
-class CustomUserTests(APITestCase):
+class TransactionsTests(APITestCase):
 
     def setUp(self):
         self.user = CustomUser.objects.create_user(username='testuser', password='testpass', email='test@example.com')
+        self.admin = CustomUser.objects.create_superuser(username='admin', password='admin', role=CustomUser.ADMIN)
+        self.account = Account.objects.create(name='TestAccount', balance=1000)
+        self.transaction = Transaction.objects.create(
+            description="Sample Transaction",
+            transaction_type=Transaction.DEBIT,
+            account=self.account,
+            amount=100
+        )
+        self.client.force_authenticate(user=self.user)
+        self.assertTrue(self.admin.is_superuser)
+        self.assertTrue(self.admin.is_staff)
+
         assert self.user is not None
 
         self.token_url = '/api/token/'
@@ -19,40 +31,86 @@ class CustomUserTests(APITestCase):
         return response.data.get('access', None)
 
     def test_user_creation(self):
-        self.assertEqual(CustomUser.objects.count(), 1)
+        self.assertEqual(CustomUser.objects.count(), 2)
 
     def test_user_authentication(self):
         response = self.client.post(self.token_url, {'username': 'testuser', 'password': 'testpass'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access", response.data)
 
-    def test_transaction_creation(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self._get_access_token()}')
-        account = Account.objects.create(name='Test account1', balance=1000.00)
-        response = self.client.post('/api/transactions/',
-                                    {'description': 'Test transaction', 'transaction_type': 'Debit',
-                                     'amount': '100.00', 'account': account.id})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Transaction.objects.count(), 1)
-
-    def test_account_creation(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self._get_access_token()}')
-        response = self.client.post('/api/accounts/', {'name': 'Test account', 'transactions': '1000.00'})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Account.objects.count(), 1)
-
-    def test_token_verification(self):
-        response = self.client.post(self.verify_token_url, {'token': self._get_access_token()})
+    def test_get_transaction_list(self):
+        response = self.client.get('/api/transactions/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("data", response.data)
 
-    def test_user_retrieval(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self._get_access_token()}')
-        response = self.client.get('/api/users/')
+    def test_create_transaction_admin(self):
+        self.client.force_authenticate(user=self.admin)
+        data = {
+            "description": "Another Transaction",
+            "transaction_type": Transaction.CREDIT,
+            "account": self.account.id,
+            "amount": 100
+        }
+        response = self.client.post('/api/transactions/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_update_transaction_non_admin(self):
+        data = {
+            "amount": 200
+        }
+        response = self.client.put(f'/api/transactions/{self.transaction.id}/', data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_update_transaction_admin(self):
+        self.client.force_authenticate(user=self.admin)
+        data = {
+            "amount": 200
+        }
+        response = self.client.patch(f'/api/transactions/{self.transaction.id}/', data)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
 
-    def test_account_retrieval(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self._get_access_token()}')
+class AccountViewSetTestCase(APITestCase):
+
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(username='test', password='test')
+        self.admin = CustomUser.objects.create_superuser(username='admin', password='admin', role= CustomUser.ADMIN)
+        self.account = Account.objects.create(name='TestAccount', balance=1000)
+        self.client.force_authenticate(user=self.user)
+
+    def test_get_account_list(self):
         response = self.client.get('/api/accounts/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_account_non_admin(self):
+        data = {
+            "name": "Another Account",
+            "balance": 1500
+        }
+        response = self.client.post('/api/accounts/', data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_account_admin(self):
+        self.client.force_authenticate(user=self.admin)
+        data = {
+            "name": "Another Account",
+            "balance": 1500
+        }
+        response = self.client.post('/api/accounts/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_update_account_non_admin(self):
+        data = {
+            "balance": 2000
+        }
+        response = self.client.put(f'/api/accounts/{self.account.id}/', data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_update_account_admin(self):
+        self.client.force_authenticate(user=self.admin)
+        data = {
+            "balance": 2000
+        }
+        response = self.client.patch(f'/api/accounts/{self.account.id}/', data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+

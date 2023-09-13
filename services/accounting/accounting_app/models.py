@@ -3,7 +3,13 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
-    pass
+    ADMIN = 'Admin'
+    USER = 'User'
+    ROLES = [
+        (ADMIN, 'Admin'),
+        (USER, 'User'),
+    ]
+    role = models.CharField(max_length=50, choices=ROLES, default=USER)
 
 
 class Transaction(models.Model):

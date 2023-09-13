@@ -29,7 +29,7 @@ class JWTAuthenticationMiddleware:
         if user:
             return True, user, 200
         resp = requests.post(
-            settings.KONG_BASE_URL + "/accounting/apis/token/verify/",
+            settings.KONG_BASE_URL + "/accounting/api/token/verify/",
             data={"token": token},
             verify=False,
         )

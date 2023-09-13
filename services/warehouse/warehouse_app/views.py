@@ -6,6 +6,8 @@ from .serializers import WarehouseItemSerializer
 from faker import Faker
 
 fake = Faker()
+
+
 class WarehouseItemList(APIView):
     def get(self, request):
         items = WarehouseItem.objects.all()
@@ -13,20 +15,26 @@ class WarehouseItemList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        if not request.user_data['role'] == 'Admin':
+            return Response({'detail': 'Only administrators can add items.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = WarehouseItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class WarehouseItemPrice(APIView):
     def put(self, request, item_id):
+        if not request.user_data['role'] == 'Admin':
+            return Response({'detail': 'Only administrators can update item price.'}, status=status.HTTP_403_FORBIDDEN)
         item = WarehouseItem.objects.get(id=item_id)
         serializer = WarehouseItemSerializer(item, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class WarehouseItemBuy(APIView):
     def post(self, request, item_id):
@@ -39,8 +47,11 @@ class WarehouseItemBuy(APIView):
         else:
             return Response({'message': 'Insufficient quantity available'}, status=status.HTTP_400_BAD_REQUEST)
 
+
 def random_float(min_val, max_val, decimals=2):
     return fake.random_int(min_val * (10 ** decimals), max_val * (10 ** decimals)) / (10 ** decimals)
+
+
 class CreateDummyDataWarehouse(APIView):
     def get(self, request):
         # Generate fake data for WarehouseItem model
@@ -57,6 +68,5 @@ class CreateDummyDataWarehouse(APIView):
             price=price
         )
         item.save()
-        return Response({'message': 'Successfully created a new WarehouseItem instance'}, status=status.HTTP_201_CREATED)
-
-
+        return Response({'message': 'Successfully created a new WarehouseItem instance'},
+                        status=status.HTTP_201_CREATED)

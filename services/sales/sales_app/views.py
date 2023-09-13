@@ -1,13 +1,19 @@
 from django.core.cache import cache
 from .models import Sale, Order
-from .serializers import SaleSerializer
+from .serializers import SaleSerializer, OrderSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .tasks import adjust_inventory
 from django.http import JsonResponse
 from rest_framework import status
 
+
 class SaleListCreate(APIView):
+
+    def get(self, request):
+        sales = Sale.objects.all()
+        serializer = SaleSerializer(sales, many=True)
+        return Response(serializer.data)
 
     def post(self, request):
         serializer = SaleSerializer(data=request.data)
@@ -22,6 +28,11 @@ class SaleListCreate(APIView):
 
 
 class OrderCreate(APIView):
+    def get(self, request):
+        order = Order.objects.all()
+        serializer = OrderSerializer(order, many=True)
+        return Response(serializer.data)
+
     def post(self, request):
         item_id = request.POST.get('item_id')
         item_name = request.POST.get('item_name')
