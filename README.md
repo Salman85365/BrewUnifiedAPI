@@ -36,7 +36,7 @@ Create a superuser:
 ### To get the access token, navigate to:
 
 Access Token Endpoint
-   ```http://localhost:8000/api/token/```
+   ```http://localhost:8000/accounting/api/token/```
 Use Postman or Insomnia to fetch the token. Include it in subsequent requests as:
 
 Authorization: Bearer {access_token}
