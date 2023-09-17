@@ -6,8 +6,12 @@ from .models import CustomUser, Transaction, Account
 class TransactionsTests(APITestCase):
 
     def setUp(self):
-        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', email='test@example.com')
-        self.admin = CustomUser.objects.create_superuser(username='admin', password='admin', role=CustomUser.ADMIN)
+        self.user = CustomUser.objects.create_user(username='testuser',
+                                                   password='testpass',
+                                                   email='test@example.com')
+        self.admin = CustomUser.objects.create_superuser(username='admin',
+                                                         password='admin',
+                                                         role=CustomUser.ADMIN)
         self.account = Account.objects.create(name='TestAccount', balance=1000)
         self.transaction = Transaction.objects.create(
             description="Sample Transaction",
@@ -25,7 +29,8 @@ class TransactionsTests(APITestCase):
         self.verify_token_url = '/api/token/verify/'
 
     def _get_access_token(self):
-        response = self.client.post(self.token_url, {'username': 'testuser', 'password': 'testpass'})
+        response = self.client.post(self.token_url, {
+            'username': 'testuser', 'password': 'testpass'})
         if response.status_code != status.HTTP_200_OK:
             print(response.content)
         return response.data.get('access', None)
@@ -34,7 +39,8 @@ class TransactionsTests(APITestCase):
         self.assertEqual(CustomUser.objects.count(), 2)
 
     def test_user_authentication(self):
-        response = self.client.post(self.token_url, {'username': 'testuser', 'password': 'testpass'})
+        response = self.client.post(self.token_url, {
+            'username': 'testuser', 'password': 'testpass'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access", response.data)
 
@@ -57,7 +63,8 @@ class TransactionsTests(APITestCase):
         data = {
             "amount": 200
         }
-        response = self.client.put(f'/api/transactions/{self.transaction.id}/', data)
+        response = self.client.put(f'/api/transactions/{self.transaction.id}/',
+                                   data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_transaction_admin(self):
@@ -65,15 +72,20 @@ class TransactionsTests(APITestCase):
         data = {
             "amount": 200
         }
-        response = self.client.patch(f'/api/transactions/{self.transaction.id}/', data)
+        response = self.client.patch(
+            f'/api/transactions/{self.transaction.id}/', data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class AccountViewSetTestCase(APITestCase):
 
     def setUp(self):
-        self.user = CustomUser.objects.create_user(username='test', password='test')
-        self.admin = CustomUser.objects.create_superuser(username='admin', password='admin', role= CustomUser.ADMIN)
+        self.user = CustomUser.objects.create_user(username='test',
+                                                   password='test')
+        self.admin = CustomUser.objects.create_superuser(username='admin',
+                                                         password='admin',
+                                                         role=CustomUser.ADMIN)
         self.account = Account.objects.create(name='TestAccount', balance=1000)
         self.client.force_authenticate(user=self.user)
 
@@ -112,5 +124,3 @@ class AccountViewSetTestCase(APITestCase):
         }
         response = self.client.patch(f'/api/accounts/{self.account.id}/', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-

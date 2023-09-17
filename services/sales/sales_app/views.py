@@ -38,10 +38,12 @@ class OrderCreate(APIView):
         item_name = request.POST.get('item_name')
         quantity_ordered = request.POST.get('quantity_ordered', 1)
 
-        order = Order(item_name=item_name, quantity_ordered=quantity_ordered, item_id=item_id)
+        order = Order(item_name=item_name, quantity_ordered=quantity_ordered,
+                      item_id=item_id)
         order.save()
 
         # Trigger the Celery task to adjust inventory in warehouse service
         adjust_inventory.delay(order.id)
 
-        return JsonResponse({'status': 'success', 'message': 'Order created successfully.'})
+        return JsonResponse(
+            {'status': 'success', 'message': 'Order created successfully.'})

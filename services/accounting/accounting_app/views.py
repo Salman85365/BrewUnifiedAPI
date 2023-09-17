@@ -1,20 +1,24 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import CustomUser, Transaction, Account
 from rest_framework_simplejwt.views import TokenVerifyView
-from .serializers import CustomUserSerializer, TransactionSerializer, AccountSerializer, CustomTokenVerifySerializer
+
+from .models import CustomUser, Transaction, Account
 from .permissions import IsAdminUser
-from rest_framework import status
-from rest_framework.response import Response
+from .serializers import CustomUserSerializer, TransactionSerializer, \
+    AccountSerializer, CustomTokenVerifySerializer
+
+
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
 
+
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     permission_classes = [IsAuthenticated]
+
     def get_permissions(self):
 
         if self.action in ['update', 'partial_update', 'destroy']:
@@ -31,7 +35,8 @@ class AccountViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         """
-        Instantiates and returns the list of permissions that this view requires.
+        Instantiates and returns the list of permissions that this view
+        requires.
         """
         if self.action in ['update', 'partial_update', 'destroy', 'create']:
             permission_classes = [IsAuthenticated, IsAdminUser]
