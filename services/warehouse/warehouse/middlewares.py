@@ -20,7 +20,7 @@ class JWTAuthenticationMiddleware:
         Send request to auth service and validate token.
         """
         """
-        This caching logic has been added to reduce the load on the 
+        This caching logic has been added to reduce the load on the
         accounting service.
         """
         cache_key = f'tokencache_{token}'
@@ -37,7 +37,8 @@ class JWTAuthenticationMiddleware:
         try:
             data_json = resp.json()
         except Exception as e:
-            return False, {"detail": "Token is invalid or expired"}, 401
+            error_message = f"Token is invalid or expired: {str(e)}"
+            return False, {"detail": error_message}, 401
 
         if resp.status_code == 401:
             return False, data_json, resp.status_code
@@ -55,22 +56,23 @@ class JWTAuthenticationMiddleware:
             # Exclude this middleware for admin site
             path_prefixes = ("/admin", "/swagger", "/redoc")
 
-            if any(request.path.startswith(prefix) for prefix in path_prefixes):
+            if any(request.path.startswith(prefix) for prefix in
+                   path_prefixes):
                 return self.get_response(request)
 
             elif not token:
                 return JsonResponse(
-                    {"Error": "Authentication Token is Missing"}, safe=False, status=401
+                    {"Error": "Authentication Token is Missing"}, safe=False,
+                    status=401
                 )
-
-
             else:
                 token = token.split(" ")[1]
                 # Validate Token
                 is_valid, json_data, status_code = self.is_valid_token(token)
                 # Same Response in case of invalid token
                 if not is_valid:
-                    return JsonResponse(json_data, safe=False, status=status_code)
+                    return JsonResponse(json_data, safe=False,
+                                        status=status_code)
 
                 # Add user data to request Json
                 request.user_data = json_data["data"]

@@ -1,9 +1,10 @@
+from faker import Faker
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .models import WarehouseItem
 from .serializers import WarehouseItemSerializer
-from faker import Faker
 
 fake = Faker()
 
@@ -16,7 +17,8 @@ class WarehouseItemList(APIView):
 
     def post(self, request):
         if not request.user_data['role'] == 'Admin':
-            return Response({'detail': 'Only administrators can add items.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'detail': 'Only administrators can add items.'},
+                            status=status.HTTP_403_FORBIDDEN)
         serializer = WarehouseItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -27,9 +29,12 @@ class WarehouseItemList(APIView):
 class WarehouseItemPrice(APIView):
     def put(self, request, item_id):
         if not request.user_data['role'] == 'Admin':
-            return Response({'detail': 'Only administrators can update item price.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {'detail': 'Only administrators can update item price.'},
+                status=status.HTTP_403_FORBIDDEN)
         item = WarehouseItem.objects.get(id=item_id)
-        serializer = WarehouseItemSerializer(item, data=request.data, partial=True)
+        serializer = WarehouseItemSerializer(item, data=request.data,
+                                             partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -43,13 +48,17 @@ class WarehouseItemBuy(APIView):
         if item.quantity >= ordered_quantity:
             item.quantity -= ordered_quantity
             item.save()
-            return Response({'message': f'Successfully bought {ordered_quantity} items'}, status=status.HTTP_200_OK)
+            return Response(
+                {'message': f'Successfully bought {ordered_quantity} items'},
+                status=status.HTTP_200_OK)
         else:
-            return Response({'message': 'Insufficient quantity available'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Insufficient quantity available'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 def random_float(min_val, max_val, decimals=2):
-    return fake.random_int(min_val * (10 ** decimals), max_val * (10 ** decimals)) / (10 ** decimals)
+    return fake.random_int(min_val * (10 ** decimals),
+                           max_val * (10 ** decimals)) / (10 ** decimals)
 
 
 class CreateDummyDataWarehouse(APIView):
@@ -68,5 +77,6 @@ class CreateDummyDataWarehouse(APIView):
             price=price
         )
         item.save()
-        return Response({'message': 'Successfully created a new WarehouseItem instance'},
-                        status=status.HTTP_201_CREATED)
+        return Response(
+            {'message': 'Successfully created a new WarehouseItem instance'},
+            status=status.HTTP_201_CREATED)

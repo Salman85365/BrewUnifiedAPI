@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('accounting_app', '0001_initial'),
     ]
@@ -13,6 +12,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='customuser',
             name='role',
-            field=models.CharField(choices=[('Admin', 'Admin'), ('User', 'User')], default='User', max_length=50),
+            field=models.CharField(
+                choices=[('Admin', 'Admin'), ('User', 'User')], default='User',
+                max_length=50),
         ),
     ]
