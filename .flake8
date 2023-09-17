@@ -2,3 +2,4 @@
 exclude =
     */migrations/*,
     */settings.py
+max-line-length = 120
