@@ -84,7 +84,7 @@ KONG_BASE_URL = env("KONG_BASE_URL", default="http://kong:8000")
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-if env("POSTGRES"):
+if env("POSTGRES", default=None):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
