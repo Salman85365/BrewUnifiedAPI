@@ -3,7 +3,6 @@ from unittest.mock import patch, Mock, MagicMock
 from rest_framework.test import APIClient
 from django.test import RequestFactory
 from sales.middlewares import JWTAuthenticationMiddleware
-from django.conf import settings
 
 
 class JWTAuthenticationMiddlewareTest(unittest.TestCase):
