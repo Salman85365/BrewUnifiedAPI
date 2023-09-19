@@ -11,7 +11,8 @@ def send_email(user_email, user_name, order_id, order_status):
         from_email=settings.FROM_EMAIL,
         to_emails=user_email,
         subject=f'Order {order_id} has been {order_status}',
-        html_content=f'Dear {user_name}, <br> Your order {order_id} has been {order_status}. <br> Thanks, <br> BrewUnifed Team'
+        html_content=f'Dear {user_name}, <br> Your order {order_id} has been {order_status}. <br> Thanks, <br> '
+                     f'BrewUnifed Team'
     )
     try:
         sg = SendGridAPIClient(settings.SENDGRID_API_KEY)

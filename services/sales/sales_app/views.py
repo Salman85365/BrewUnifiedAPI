@@ -44,4 +44,3 @@ class OrderCreate(APIView):
             adjust_inventory(order.id, user_email, user_name, token)
             return JsonResponse({'status': 'success', 'message': 'Order created successfully.'})
         return JsonResponse({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
