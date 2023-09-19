@@ -158,5 +158,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-SENDGRID_API_KEY = env.str('SENDGRID_EMAIL_API_KEY')
-FROM_EMAIL = env.str('FROM_EMAIL')
+SENDGRID_API_KEY = env.str('SENDGRID_EMAIL_API_KEY', default=None)
+FROM_EMAIL = env.str('FROM_EMAIL', default=None)
