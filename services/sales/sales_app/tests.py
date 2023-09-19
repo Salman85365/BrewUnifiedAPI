@@ -13,7 +13,6 @@ class JWTAuthenticationMiddlewareTest(unittest.TestCase):
         self.factory = RequestFactory()
         self.middleware = JWTAuthenticationMiddleware(
             lambda req: Mock(status_code=200))
-        settings.KONG_BASE_URL = "mocked_url"  # mock KONG_BASE_URL for tests
 
     @patch("sales.middlewares.cache.get")
     @patch("sales.middlewares.cache.set")
@@ -59,11 +58,15 @@ class JWTAuthenticationMiddlewareTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     @patch('sales.middlewares.JWTAuthenticationMiddleware.is_valid_token',
-           return_value=(True, {"data": "mocked_data"}, 200))
+           return_value=(
+                   True,
+                   {"data": {"email": "test@example.com", "username": "test"}},
+                   200))
     @patch('sales_app.tasks.adjust_inventory.delay',
            return_value=MagicMock(name="Mocked method"))  # Add this line
     def test_create_order(self, mock_valid_token,
                           mocked_task):  # Add mocked_task
+
         response = self.client.post('/api/orders/', {
             'item_id': '1',
             'item_name': 'ItemName',
