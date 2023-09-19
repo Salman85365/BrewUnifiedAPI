@@ -33,6 +33,7 @@ jobs:
         working-directory: ./services/warehouse
         env:
           DJANGO_SETTINGS_MODULE: warehouse.settings
+          WAREHOUSE_SECRET_KEY: ${{ secrets.WAREHOUSE_SECRET_KEY }}
         run: |
           python manage.py test
 
