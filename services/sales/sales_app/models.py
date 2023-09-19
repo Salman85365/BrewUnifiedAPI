@@ -12,6 +12,19 @@ class Sale(models.Model):
 
 
 class Order(models.Model):
+    PENDING = 'Pending'
+    CONFIRMED = 'Confirmed'
+    FAILED = 'Failed'
+    STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (CONFIRMED, 'Confirmed'),
+        (FAILED, 'Failed'),
+    ]
     item_id = models.PositiveIntegerField()
     item_name = models.CharField(max_length=200)
     quantity_ordered = models.PositiveIntegerField(default=1)
+    status = models.CharField(max_length=50,
+                              choices=STATUS_CHOICES,
+                              default=PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

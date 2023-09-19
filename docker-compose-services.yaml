@@ -52,6 +52,7 @@ services:
     volumes:
       - ./kong.yml:/etc/kong/kong.yml
     ports:
+      - "80:8000"
       - "8000:8000"
       - "8443:8443"
       - "8101:8001"
@@ -71,6 +72,9 @@ services:
         - REDIS_HOST=${REDIS_HOST}
         - REDIS_PORT=${REDIS_PORT}
         - POSTGRES=${POSTGRES}
+        - WAREHOUSE_SECRET_KEY=${WAREHOUSE_SECRET_KEY}
+        - DEBUG=${DEBUG}
+        - ALLOWED_HOSTS=${ALLOWED_HOSTS}
     command: ["./wait-for-it.sh", "redis:6379", "--", "python", "manage.py", "runserver", "0.0.0.0:8001"]
     volumes:
       - ./services/warehouse:/app
@@ -94,6 +98,9 @@ services:
         - DB_PORT=${DB_PORT}
         - KONG_BASE_URL=${KONG_BASE_URL}
         - POSTGRES=${POSTGRES}
+        - ACCOUNTING_SECRET_KEY=${ACCOUNTING_SECRET_KEY}
+        - DEBUG=${DEBUG}
+        - ALLOWED_HOSTS=${ALLOWED_HOSTS}
     command: python manage.py runserver 0.0.0.0:8002
     volumes:
       - ./services/accounting:/app
@@ -118,6 +125,11 @@ services:
         - REDIS_PORT=${REDIS_PORT}
         - KONG_BASE_URL=${KONG_BASE_URL}
         - POSTGRES=${POSTGRES}
+        - SALES_SECRET_KEY=${SALES_SECRET_KEY}
+        - DEBUG=${DEBUG}
+        - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+        - SENDGRID_EMAIL_API_KEY=${SENDGRID_EMAIL_API_KEY}
+        - FROM_EMAIL=${FROM_EMAIL}
     command: ["./wait-for-it.sh", "redis:6379", "--", "python", "manage.py", "runserver", "0.0.0.0:8003"]
     volumes:
       - ./services/sales:/app
@@ -139,6 +151,13 @@ services:
         - DB_PORT=${DB_PORT}
         - REDIS_HOST=${REDIS_HOST}
         - REDIS_PORT=${REDIS_PORT}
+        - SALES_SECRET_KEY=${SALES_SECRET_KEY}
+        - DEBUG=${DEBUG}
+        - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+        - SENDGRID_EMAIL_API_KEY=${SENDGRID_EMAIL_API_KEY}
+        - FROM_EMAIL=${FROM_EMAIL}
+        - POSTGRES=${POSTGRES}
+        - KONG_BASE_URL=${KONG_BASE_URL}
     volumes:
       - .:/code
     depends_on:

@@ -4,6 +4,7 @@ from rest_framework.test import APIClient
 from django.test import RequestFactory
 from sales.middlewares import JWTAuthenticationMiddleware
 from django.conf import settings
+import responses
 
 
 class JWTAuthenticationMiddlewareTest(unittest.TestCase):
@@ -13,7 +14,7 @@ class JWTAuthenticationMiddlewareTest(unittest.TestCase):
         self.factory = RequestFactory()
         self.middleware = JWTAuthenticationMiddleware(
             lambda req: Mock(status_code=200))
-        settings.KONG_BASE_URL = "mocked_url"  # mock KONG_BASE_URL for tests
+        settings.KONG_BASE_URL = "https://mocked_url"  # mock KONG_BASE_URL for tests
 
     @patch("sales.middlewares.cache.get")
     @patch("sales.middlewares.cache.set")
@@ -58,17 +59,30 @@ class JWTAuthenticationMiddlewareTest(unittest.TestCase):
         response = self.middleware(request)
         self.assertEqual(response.status_code, 200)
 
+    @responses.activate
     @patch('sales.middlewares.JWTAuthenticationMiddleware.is_valid_token',
-           return_value=(True, {"data": "mocked_data"}, 200))
+           return_value=(
+                   True,
+                   {"data": {"email": "test@example.com", "username": "test"}},
+                   200))
     @patch('sales_app.tasks.adjust_inventory.delay',
-           return_value=MagicMock(name="Mocked method"))  # Add this line
-    def test_create_order(self, mock_valid_token,
-                          mocked_task):  # Add mocked_task
+           return_value=MagicMock(name="Mocked method"))
+    @patch('sales_app.views.cache')
+    @patch('sales_app.email.send_email.delay',
+           return_value=MagicMock(name="Mocked method"))
+    def test_create_order(self, mock_valid_token, mocked_task, mock_cache,
+                          mock_email):
+        # Mock the HTTP POST request to your mocked URL
+        responses.add(responses.POST,
+                      "https://mocked_url/warehouse/api/items/1/buy/",
+                      json={"key": "value"}, status=200)
+
         response = self.client.post('/api/orders/', {
             'item_id': '1',
             'item_name': 'ItemName',
             'quantity_ordered': 2
         }, HTTP_AUTHORIZATION='Bearer test_token')
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'success')
 

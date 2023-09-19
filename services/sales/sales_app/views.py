@@ -34,16 +34,13 @@ class OrderCreate(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        item_id = request.POST.get('item_id')
-        item_name = request.POST.get('item_name')
-        quantity_ordered = request.POST.get('quantity_ordered', 1)
-
-        order = Order(item_name=item_name, quantity_ordered=quantity_ordered,
-                      item_id=item_id)
-        order.save()
-
-        # Trigger the Celery task to adjust inventory in warehouse service
-        adjust_inventory.delay(order.id)
-
-        return JsonResponse(
-            {'status': 'success', 'message': 'Order created successfully.'})
+        user_email = request.user_data['email']
+        user_name = request.user_data['username']
+        token = request.META.get("HTTP_AUTHORIZATION")
+        serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            order = serializer.save()
+            # Trigger the Celery task to adjust inventory in warehouse service
+            adjust_inventory(order.id, user_email, user_name, token)
+            return JsonResponse({'status': 'success', 'message': 'Order created successfully.'})
+        return JsonResponse({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

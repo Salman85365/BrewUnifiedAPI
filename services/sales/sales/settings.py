@@ -22,13 +22,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m(jti20+h#54_2h7ohkb*3pebef+4x4wpx)1=!vvv)!lcogquj'
+SECRET_KEY = env("SALES_SECRET_KEY",
+                 default="%pl8%n65f(s6xhd+wa@8ge*s_zkv=qw3cjpj=ndgnygph9cfg%")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=True)
 
 # This should be not be set to '*'  in production
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 
 # Application definition
@@ -157,3 +158,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SENDGRID_API_KEY = env.str('SENDGRID_EMAIL_API_KEY', default=None)
+FROM_EMAIL = env.str('FROM_EMAIL', default=None)
