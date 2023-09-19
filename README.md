@@ -21,9 +21,9 @@ Unified API for a microbrewery to manage Warehouse, Accounting, and Sales servic
 From your main project directory (`Task_project`):
 
 ```shell
-make setup
-make serve
-make migrate_all
+make setup  # This will allow permissions to wait-for-it.sh
+make serve # This will run docker compose file, build and run containers 
+make migrate_all # This will run migrations for all services
 ```
 
 ### Superuser Creation
@@ -36,7 +36,7 @@ Create a superuser:
 ### To get the access token, navigate to:
 
 Access Token Endpoint
-   ```http://localhost:8000/api/token/```
+   ```http://localhost:8000/accounting/api/token/```
 Use Postman or Insomnia to fetch the token. Include it in subsequent requests as:
 
 Authorization: Bearer {access_token}

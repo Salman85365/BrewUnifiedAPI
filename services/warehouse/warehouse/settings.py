@@ -29,7 +29,6 @@ DEBUG = env.bool("DEBUG", default=True)
 # This should be not be set to '*'  in production
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -100,7 +99,6 @@ else:
         }
     }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -119,7 +117,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # caching settings
 CACHES = {
     "default": {
@@ -131,7 +128,6 @@ CACHES = {
     }
 }
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -142,7 +138,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

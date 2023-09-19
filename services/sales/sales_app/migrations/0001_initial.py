@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -14,7 +13,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Order',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
                 ('item_name', models.CharField(max_length=200)),
                 ('quantity_ordered', models.PositiveIntegerField(default=1)),
             ],
@@ -22,7 +23,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Sale',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
                 ('item', models.CharField(max_length=100)),
                 ('quantity_sold', models.IntegerField()),
                 ('sale_date', models.DateTimeField(auto_now_add=True)),
