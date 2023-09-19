@@ -62,11 +62,16 @@ class JWTAuthenticationMiddlewareTest(unittest.TestCase):
     @responses.activate
     @patch('sales.middlewares.JWTAuthenticationMiddleware.is_valid_token',
            return_value=(
-           True, {"data": {"email": "test@example.com", "username": "test"}},
-           200))
+                   True,
+                   {"data": {"email": "test@example.com", "username": "test"}},
+                   200))
     @patch('sales_app.tasks.adjust_inventory.delay',
            return_value=MagicMock(name="Mocked method"))
-    def test_create_order(self, mock_valid_token, mocked_task):
+    @patch('sales_app.views.cache')
+    @patch('sales_app.email.send_email.delay',
+           return_value=MagicMock(name="Mocked method"))
+    def test_create_order(self, mock_valid_token, mocked_task, mock_cache,
+                          mock_email):
         # Mock the HTTP POST request to your mocked URL
         responses.add(responses.POST,
                       "https://mocked_url/warehouse/api/items/1/buy/",
