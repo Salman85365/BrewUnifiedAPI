@@ -24,4 +24,4 @@ jobs:
         sshpass -e rsync -e "ssh -o StrictHostKeyChecking=no" -av ./ cloudsigma@31.171.241.189:./BrewUnifiedAPI/
 
         # Optional: Run any post-deployment commands using sshpass, e.g., restarting services
-        sshpass -e ssh -o StrictHostKeyChecking=no cloudsigma@31.171.241.189 "make serve"
+        sshpass -e ssh -o StrictHostKeyChecking=no cloudsigma@31.171.241.189 "cd /home/cloudsigma/BrewUnifiedAPI && make serve"
