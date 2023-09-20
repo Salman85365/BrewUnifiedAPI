@@ -1,0 +1,34 @@
+name: CD to CloudSigma VM
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy to CloudSigma VM
+      env:
+        PRIVATE_KEY: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+      run: |
+        # Install SSH client (should already be available on ubuntu-latest)
+        sudo apt-get install -y ssh
+
+        # Save private key to a file
+        echo "$PRIVATE_KEY" > private_key
+        chmod 600 private_key
+
+        # Copy code to VM
+        rsync -e "ssh -i private_key -o StrictHostKeyChecking=no" -av ./ cloudsigma@31.171.241.189:./BrewUnifiedAPI/
+
+        # Optional: Run any post-deployment commands, e.g., restarting services
+        ssh -i private_key -o StrictHostKeyChecking=no cloudsigma@31.171.241.189 "make serve"
+
+        # Clean up private key
+        rm -f private_key
