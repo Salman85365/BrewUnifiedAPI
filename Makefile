@@ -12,35 +12,35 @@ help: ## display this help message
 
 
 serve: ## run all docker services
-	docker-compose -f docker-compose-services.yaml up -d --build
+	docker compose -f docker-compose-services.yaml up -d --build
 
 
 restart_%: ## Restart specific service (make restart_warehouse)
-	docker-compose -f docker-compose-services.yaml stop $*
-	docker-compose -f docker-compose-services.yaml  up -d --build $*
+	docker compose -f docker-compose-services.yaml stop $*
+	docker compose -f docker-compose-services.yaml  up -d --build $*
 
 
 stop: ## Stop all docker Backend Services
-	docker-compose -f docker-compose-services.yaml stop
+	docker compose -f docker-compose-services.yaml stop
 
 loaddata_%: ## Load fixtures for specific service (make loaddata_warehouse)
-	docker-compose -f docker-compose-services.yaml exec $* python manage.py loaddata fixtures/initial_data.json
+	docker compose -f docker-compose-services.yaml exec $* python manage.py loaddata fixtures/initial_data.json
 
 down: ## Remove all service containers
-	docker-compose -f docker-compose-services.yaml down
+	docker compose -f docker-compose-services.yaml down
 
 shell_%:
-	docker-compose -f docker-compose-services.yaml exec $* python manage.py shell
+	docker compose -f docker-compose-services.yaml exec $* python manage.py shell
 
 logs_%: ## Trail logs of the service (make logs_warehouse)
 	docker logs -f --tail 500 $*
 
 
 command_%: ## Run custom docker django-admin command (make command_warehouse args="shell")
-	docker-compose -f docker-compose-services.yaml  exec $* python manage.py ${args}
+	docker compose -f docker-compose-services.yaml  exec $* python manage.py ${args}
 
 migrate_%: ## Migrate docker specific backend docker services (make migrate_warehouse)
-	docker-compose -f docker-compose-services.yaml exec $* python manage.py migrate --noinput
+	docker compose -f docker-compose-services.yaml exec $* python manage.py migrate --noinput
 
 migrate_all: ## Migrate all docker containers
 	make migrate_warehouse
@@ -64,8 +64,8 @@ setup:
 	@chmod +x ./services/warehouse/wait-for-it.sh
 
 test_%: ## Run tests for specific service (make test_warehouse)
-	docker-compose -f docker-compose-services.yaml exec $* python manage.py test
+	c -f docker-compose-services.yaml exec $* python manage.py test
 
 
 user_%: ## Create superuser for specific service (make createsuperuser_warehouse)
-	docker-compose -f docker-compose-services.yaml exec $* python manage.py createsuperuser
+	docker compose -f docker-compose-services.yaml exec $* python manage.py createsuperuser
