@@ -19,7 +19,7 @@ class Transaction(models.Model):
         (DEBIT, 'Debit'),
         (CREDIT, 'Credit'),
     ]
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True, blank=True)
     transaction_type = models.CharField(max_length=10,
                                         choices=TRANSACTION_TYPES)
     account = models.ForeignKey('Account', related_name='transactions',

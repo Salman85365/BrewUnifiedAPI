@@ -27,6 +27,20 @@ class TransactionViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
+    def perform_create(self, serializer):
+        # if the transaction is a debit, then the amount is subtracted from the
+        # account balance. If the transaction is a credit, then the amount is
+        # added to the account balance.
+        account = serializer.validated_data['account']
+        transaction_type = serializer.validated_data['transaction_type']
+        amount = serializer.validated_data['amount']
+        if transaction_type == 'Debit':
+            account.balance -= amount
+        elif transaction_type == 'Credit':
+            account.balance += amount
+        account.save()
+        serializer.save()
+
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
