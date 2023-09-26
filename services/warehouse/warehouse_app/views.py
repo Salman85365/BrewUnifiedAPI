@@ -7,8 +7,7 @@ from .serializers import WarehouseItemSerializer
 
 
 class WarehouseItemViewSet(
-    viewsets.ReadOnlyModelViewSet):  # By default, allows only read
-    # operations (list and retrieve)
+        viewsets.ReadOnlyModelViewSet):
     queryset = WarehouseItem.objects.all()
     serializer_class = WarehouseItemSerializer
 

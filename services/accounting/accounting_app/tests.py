@@ -12,7 +12,8 @@ class TransactionsTests(APITestCase):
         self.admin = CustomUser.objects.create_superuser(username='admin',
                                                          password='admin',
                                                          role=CustomUser.ADMIN)
-        self.account = Account.objects.create(name='TestAccount', balance=1000)
+        self.account = Account.objects.create(name='TestAccount', balance=1000,
+                                              user=self.user)
         self.transaction = Transaction.objects.create(
             description="Sample Transaction",
             transaction_type=Transaction.DEBIT,
@@ -86,7 +87,8 @@ class AccountViewSetTestCase(APITestCase):
         self.admin = CustomUser.objects.create_superuser(username='admin',
                                                          password='admin',
                                                          role=CustomUser.ADMIN)
-        self.account = Account.objects.create(name='TestAccount', balance=1000)
+        self.account = Account.objects.create(name='TestAccount', balance=1000,
+                                              user=self.user)
         self.client.force_authenticate(user=self.user)
 
     def test_get_account_list(self):
@@ -96,7 +98,8 @@ class AccountViewSetTestCase(APITestCase):
     def test_create_account_non_admin(self):
         data = {
             "name": "Another Account",
-            "balance": 1500
+            "balance": 1500,
+            "user": self.user
         }
         response = self.client.post('/api/accounts/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -105,14 +108,16 @@ class AccountViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin)
         data = {
             "name": "Another Account",
-            "balance": 1500
+            "balance": 1500,
+            "user": self.admin.id
         }
         response = self.client.post('/api/accounts/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_update_account_non_admin(self):
         data = {
-            "balance": 2000
+            "balance": 2000,
+            "user": self.user
         }
         response = self.client.put(f'/api/accounts/{self.account.id}/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -120,7 +125,7 @@ class AccountViewSetTestCase(APITestCase):
     def test_update_account_admin(self):
         self.client.force_authenticate(user=self.admin)
         data = {
-            "balance": 2000
+            "balance": 2000,
         }
         response = self.client.patch(f'/api/accounts/{self.account.id}/', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

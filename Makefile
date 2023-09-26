@@ -64,7 +64,7 @@ setup:
 	@chmod +x ./services/warehouse/wait-for-it.sh
 
 test_%: ## Run tests for specific service (make test_warehouse)
-	c -f docker-compose-services.yaml exec $* python manage.py test
+	docker compose -f docker-compose-services.yaml exec $* python manage.py test
 
 
 user_%: ## Create superuser for specific service (make createsuperuser_warehouse)

@@ -73,7 +73,7 @@ class WarehouseItemTests(APITestCase):
            return_value=(True, {"data": {"role": "Admin"}}, 200))
     def test_admin_can_add_item(self, mock_valid_token):
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.post('/api/items/', {
+        response = self.client.post('/api/items/add-item/', {
             'name': 'New Item', 'price': 50, 'quantity': 10},
                                     HTTP_AUTHORIZATION='Bearer InvalidToken')
         self.assertEqual(response.status_code, 201)
@@ -82,7 +82,7 @@ class WarehouseItemTests(APITestCase):
            return_value=(True, {"data": {"role": "User"}}, 200))
     def test_non_admin_cannot_add_item(self, mock_valid_token):
         self.client.force_authenticate(user=self.normal_user)
-        response = self.client.post('/api/items/', {
+        response = self.client.post('/api/items/add-item/', {
             'name': 'New Item', 'price': 50, 'quantity': 10},
                                     HTTP_AUTHORIZATION='Bearer InvalidToken')
         self.assertEqual(response.status_code, 403)
