@@ -1,25 +1,24 @@
-from faker import Faker
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework.decorators import action
 from .models import WarehouseItem
 from .serializers import WarehouseItemSerializer
 
-fake = Faker()
 
+class WarehouseItemViewSet(
+    viewsets.ReadOnlyModelViewSet):  # By default, allows only read
+    # operations (list and retrieve)
+    queryset = WarehouseItem.objects.all()
+    serializer_class = WarehouseItemSerializer
 
-class WarehouseItemList(APIView):
-    def get(self, request):
-        items = WarehouseItem.objects.all()
-        serializer = WarehouseItemSerializer(items, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
+    @action(detail=False, methods=['POST'], url_path='add-item')
+    def add_item(self, request):
         if not request.user_data['role'] == 'Admin':
             return Response({'detail': 'Only administrators can add items.'},
                             status=status.HTTP_403_FORBIDDEN)
-        serializer = WarehouseItemSerializer(data=request.data)
+
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -54,29 +53,3 @@ class WarehouseItemBuy(APIView):
         else:
             return Response({'message': 'Insufficient quantity available'},
                             status=status.HTTP_400_BAD_REQUEST)
-
-
-def random_float(min_val, max_val, decimals=2):
-    return fake.random_int(min_val * (10 ** decimals),
-                           max_val * (10 ** decimals)) / (10 ** decimals)
-
-
-class CreateDummyDataWarehouse(APIView):
-    def get(self, request):
-        # Generate fake data for WarehouseItem model
-        name = fake.unique.first_name()
-        description = fake.sentence(nb_words=10)
-        quantity = fake.random_int(min=1, max=1000)
-        price = random_float(1, 1000)
-
-        # Create a new WarehouseItem instance and save to database
-        item = WarehouseItem(
-            name=name,
-            description=description,
-            quantity=quantity,
-            price=price
-        )
-        item.save()
-        return Response(
-            {'message': 'Successfully created a new WarehouseItem instance'},
-            status=status.HTTP_201_CREATED)

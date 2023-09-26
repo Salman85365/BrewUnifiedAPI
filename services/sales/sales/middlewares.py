@@ -1,4 +1,3 @@
-""" Hosts Middlewares for Teacher Training. """
 import requests
 import logging
 from django.conf import settings

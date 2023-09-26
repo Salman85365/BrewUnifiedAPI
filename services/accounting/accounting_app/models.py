@@ -11,6 +11,9 @@ class CustomUser(AbstractUser):
     ]
     role = models.CharField(max_length=50, choices=ROLES, default=USER)
 
+    def __str__(self):
+        return f"{self.username} - {self.id}"
+
 
 class Transaction(models.Model):
     DEBIT = 'Debit'
@@ -27,7 +30,14 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.account.user} - {self.amount}"
+
 
 class Account(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return f"{self.user} - {self.balance}"

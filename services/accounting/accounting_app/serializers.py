@@ -32,6 +32,9 @@ class CustomTokenVerifySerializer(TokenVerifySerializer):
         if CustomUser.objects.filter(id=user_id).exists():
             user_details = CustomUserSerializer(
                 CustomUser.objects.get(id=user_id)).data
+
+            user_details['balance'] = AccountSerializer(
+                Account.objects.get(user=user_id)).data['balance']
             return {"data": user_details}
         else:
             raise serializers.ValidationError(

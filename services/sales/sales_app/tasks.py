@@ -2,12 +2,11 @@ import requests
 from celery import shared_task
 from .models import Order, Sale
 from django.conf import settings
-from .email import send_email
 import logging
 
 
 @shared_task
-def adjust_inventory(order_id, user_email, user_name, token):
+def adjust_inventory(order_id, token):
     order = Order.objects.get(pk=order_id)
 
     response = requests.post(
@@ -17,11 +16,12 @@ def adjust_inventory(order_id, user_email, user_name, token):
     )
 
     if response.status_code == 200:
-        order.status = Order.CONFIRMED
-        Sale.objects.create(item=order.item_name, quantity_sold=order.quantity_ordered)
+        Sale.objects.create(item=order.item_name,
+                            quantity_sold=order.quantity_ordered)
     else:
         order.status = Order.FAILED
-        logging.error(f"Failed to adjust inventory for order {order_id}. Response: {response.text}")
+        logging.error(
+            f"Failed to adjust inventory for order {order_id}. Response: "
+            f"{response.text}")
 
     order.save()
-    send_email.delay(user_email, user_name, order.id, order.status)
