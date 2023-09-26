@@ -63,7 +63,10 @@ class JWTAuthenticationMiddlewareTest(unittest.TestCase):
     @patch('sales.middlewares.JWTAuthenticationMiddleware.is_valid_token',
            return_value=(
                    True,
-                   {"data": {"email": "test@example.com", "username": "test"}},
+                   {
+                       "data": {
+                           "id": "1", "email": "test@example.com",
+                           "username": "test", "balance": 10000}},
                    200))
     @patch('sales_app.tasks.adjust_inventory.delay',
            return_value=MagicMock(name="Mocked method"))
@@ -76,6 +79,20 @@ class JWTAuthenticationMiddlewareTest(unittest.TestCase):
         responses.add(responses.POST,
                       "https://mocked_url/warehouse/api/items/1/buy/",
                       json={"key": "value"}, status=200)
+        responses.add(responses.GET,
+                      "https://mocked_url/warehouse/api/items/1/",
+                      json={
+                          "id": 2,
+                          "name": "Joseph",
+                          "description": "Despite wife easy seek rather "
+                                         "popular best.",
+                          "quantity": 37,
+                          "price": 501.97,
+
+                      }, status=200)
+        responses.add(responses.POST,
+                      "https://mocked_url/accounting/api/transactions/",
+                      json={"key": "value"}, status=201)
 
         response = self.client.post('/api/orders/', {
             'item_id': '1',
