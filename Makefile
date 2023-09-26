@@ -58,14 +58,22 @@ checkout_%: ## Recreate volumes and restart services
 	make migrate_all
 	
 
-setup:
+setup: ## Setting up the permissions for the wait-for-it.sh files
 	echo "Setting permissions..."
 	@chmod +x ./services/sales/wait-for-it.sh
 	@chmod +x ./services/warehouse/wait-for-it.sh
 
 test_%: ## Run tests for specific service (make test_warehouse)
-	c -f docker-compose-services.yaml exec $* python manage.py test
+	docker compose -f docker-compose-services.yaml exec $* python manage.py test
 
 
 user_%: ## Create superuser for specific service (make createsuperuser_warehouse)
 	docker compose -f docker-compose-services.yaml exec $* python manage.py createsuperuser
+
+
+deploy_%: ## For deployment purpose
+	git checkout main
+	git pull origin main
+	git branch -D $*
+	git checkout -b $*
+	git push origin $*
